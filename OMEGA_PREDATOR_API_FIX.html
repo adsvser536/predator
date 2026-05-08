@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>OMEGA PREDATOR API FIX</title>
+<style>
+body{
+margin:0;
+background:#050816;
+color:#eef5ff;
+font-family:Arial,sans-serif;
+padding:14px;
+padding-bottom:80px;
+}
+.card{
+background:#111827;
+border:1px solid rgba(255,255,255,.08);
+border-radius:20px;
+padding:16px;
+margin-bottom:14px;
+}
+h1,h2{margin-top:0}
+.small{
+font-size:13px;
+color:#94a3b8;
+line-height:1.4;
+}
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#2563eb;
+color:white;
+font-weight:900;
+margin-top:10px;
+}
+input{
+width:100%;
+padding:12px;
+border-radius:12px;
+border:1px solid #263653;
+background:#08111f;
+color:white;
+margin-top:8px;
+}
+.item{
+background:#0f172a;
+border-radius:16px;
+padding:14px;
+margin-top:10px;
+display:grid;
+grid-template-columns:1fr auto;
+gap:10px;
+align-items:center;
+}
+.ticker{
+font-size:22px;
+font-weight:900;
+}
+.row{
+display:flex;
+justify-content:space-between;
+font-size:13px;
+margin-top:6px;
+}
+.pos{color:#34d399;font-weight:900}
+.neg{color:#fb7185;font-weight:900}
+.warn{color:#fbbf24;font-weight:900}
+.signal{
+display:inline-block;
+padding:8px 12px;
+border-radius:999px;
+font-size:12px;
+font-weight:900;
+}
+.entrar{background:#34d399;color:#03251a}
+.esperar{background:#fbbf24;color:#3b2800}
+.no{background:#64748b;color:white}
+.note{
+background:rgba(251,191,36,.08);
+border:1px solid rgba(251,191,36,.18);
+padding:12px;
+border-radius:14px;
+color:#fde68a;
+font-size:13px;
+line-height:1.4;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+<h1>🐺 OMEGA PREDATOR</h1>
+<div class="small">
+Versión arreglada para APIs. Funciona mejor subida a Tiiny Host que abierta directamente como archivo local.
+</div>
+</div>
+
+<div class="card">
+<h2>API Key</h2>
+
+<input id="apiKey" placeholder="Pega tu API key de FMP">
+
+<button onclick="guardarAPI()">
+GUARDAR API
+</button>
+
+<div class="note" style="margin-top:12px">
+Usa una API key válida de Financial Modeling Prep.
+</div>
+
+</div>
+
+<div class="card">
+<h2>Top Movers</h2>
+
+<button onclick="scan()">
+ESCANEAR TOP MOVERS
+</button>
+
+<div class="small" id="estado" style="margin-top:12px">
+Esperando escaneo...
+</div>
+
+<div id="resultados"></div>
+
+</div>
+
+<script>
+
+let api = localStorage.getItem("predator_api") || "";
+
+document.getElementById("apiKey").value = api;
+
+function guardarAPI(){
+    api = document.getElementById("apiKey").value.trim();
+    localStorage.setItem("predator_api", api);
+    document.getElementById("estado").innerText = "API guardada";
+}
+
+function score(move){
+    if(move >= 18) return ["ENTRAR","entrar"];
+    if(move >= 8) return ["ESPERAR","esperar"];
+    return ["NO ENTRAR","no"];
+}
+
+async function scan(){
+
+    if(!api){
+        document.getElementById("estado").innerText = "Falta API";
+        return;
+    }
+
+    document.getElementById("estado").innerText = "Conectando con FMP...";
+
+    try{
+
+        const url = "https://financialmodelingprep.com/stable/biggest-gainers?apikey=" + encodeURIComponent(api);
+
+        const res = await fetch(url);
+
+        if(!res.ok){
+            throw new Error("Error HTTP");
+        }
+
+        const data = await res.json();
+
+        if(!Array.isArray(data)){
+            throw new Error("Respuesta inválida");
+        }
+
+        document.getElementById("estado").innerText =
+        "Top Movers encontrados: " + data.length;
+
+        render(data.slice(0,15));
+
+    }catch(err){
+
+        document.getElementById("estado").innerText =
+        "Error API o navegador bloqueando conexión.";
+
+    }
+
+}
+
+function render(lista){
+
+    let html = "";
+
+    lista.forEach(x=>{
+
+        const ticker = x.symbol || x.ticker || "???";
+        const price = Number(x.price || 0);
+        const move = parseFloat(
+            String(x.changesPercentage || x.change || 0)
+            .replace("%","")
+            .replace("(","")
+            .replace(")","")
+        );
+
+        const d = score(move);
+
+        html += `
+        <div class="item">
+
+            <div>
+
+                <div class="ticker">
+                    ${ticker}
+                    <span class="${move>=0?'pos':'neg'}">
+                        ${move>=0?'+':''}${move.toFixed(2)}%
+                    </span>
+                </div>
+
+                <div class="row">
+                    <span>Precio</span>
+                    <span>${price.toFixed(2)}</span>
+                </div>
+
+            </div>
+
+            <div>
+                <div class="signal ${d[1]}">
+                    ${d[0]}
+                </div>
+            </div>
+
+        </div>
+        `;
+
+    });
+
+    document.getElementById("resultados").innerHTML = html;
+
+}
+
+</script>
+
+</body>
+</html>
