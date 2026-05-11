@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMEGA PREDATOR MOBILE STABLE V8</title>
+<style>
+:root{
+--bg:#050914;--panel:#0b1224;--card:#081126;--metric:#0f172a;
+--muted:#94a3b8;--green:#22c55e;--yellow:#facc15;--red:#ef4444;
+--orange:#fb923c;--blue:#38bdf8;--purple:#8b5cf6;
+}
+*{box-sizing:border-box}
+body{
+margin:0;padding:10px;color:white;font-family:Arial,sans-serif;overflow-x:hidden;
+background:
+radial-gradient(circle at 18% 0%,rgba(56,189,248,.16),transparent 24%),
+radial-gradient(circle at 92% 0%,rgba(139,92,246,.11),transparent 20%),
+linear-gradient(180deg,#02040b,#050914 48%,#02040b);
+}
+.panel{
+background:linear-gradient(180deg,rgba(14,20,40,.96),rgba(8,12,24,.96));
+border-radius:20px;padding:13px;margin-bottom:10px;
+border:1px solid rgba(56,189,248,.15);
+box-shadow:0 0 26px rgba(0,0,0,.38),0 0 16px rgba(56,189,248,.05);
+}
+.hero{
+font-size:32px;font-weight:1000;letter-spacing:2px;line-height:1;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6,#22c55e);
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:4px;
+}
+.kicker{font-size:10px;color:#38bdf8;letter-spacing:2px;font-weight:900;margin-bottom:10px}
+.sub{color:var(--muted);font-size:13px;line-height:1.4;margin-bottom:12px}
+input,select{
+width:100%;background:#050b18;color:white;border:1px solid rgba(56,189,248,.16);
+border-radius:14px;padding:12px;margin-bottom:8px;font-size:14px;
+}
+.modeGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{
+padding:10px 12px;border:none;border-radius:12px;font-weight:1000;font-size:12px;
+background:linear-gradient(135deg,#38bdf8,#22c55e);color:#04111f;cursor:pointer;
+margin:4px 5px 4px 0;box-shadow:0 0 20px rgba(56,189,248,.16);
+}
+.btnSell{background:linear-gradient(135deg,#ef4444,#fb923c);color:white}
+.btnDark{background:#111827!important;color:white!important;border:1px solid rgba(255,255,255,.08)!important}
+.statusGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:12px}
+.statusBox{
+background:linear-gradient(180deg,rgba(15,23,42,.95),rgba(8,17,31,.95));
+border-radius:18px;padding:12px;text-align:center;border:1px solid rgba(56,189,248,.10);
+min-height:82px;display:flex;flex-direction:column;justify-content:center;
+}
+.statusTitle{font-size:12px;color:var(--muted);margin-bottom:5px}
+.statusValue{font-size:29px;font-weight:1000;text-shadow:0 0 12px rgba(56,189,248,.32)}
+.sectionTitle{
+font-size:20px;font-weight:1000;letter-spacing:.7px;text-transform:uppercase;
+border-left:4px solid #38bdf8;padding-left:10px;margin-bottom:11px;
+}
+.alert{
+background:#27271d;border-radius:18px;padding:15px;font-size:13px;line-height:1.65;
+border:1px solid rgba(255,255,255,.06);
+}
+.hunt{background:linear-gradient(135deg,rgba(34,197,94,.18),rgba(56,189,248,.08))}
+.watch{background:linear-gradient(135deg,rgba(250,204,21,.12),rgba(56,189,248,.05))}
+.danger{background:linear-gradient(135deg,rgba(239,68,68,.18),rgba(251,146,60,.08))}
+.stock{
+position:relative;overflow:hidden;
+background:linear-gradient(180deg,rgba(12,23,42,.98),rgba(4,9,18,.99));
+border-radius:22px;padding:13px;margin-bottom:10px;border:1px solid rgba(255,255,255,.08);
+box-shadow:0 18px 38px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.035);
+}
+.stock::before{
+content:'';position:absolute;top:0;left:0;right:0;height:4px;
+background:linear-gradient(90deg,#38bdf8,#8b5cf6,#22c55e);opacity:.8;
+}
+.stock::after{
+content:'LIVE';position:absolute;top:9px;right:10px;font-size:8px;font-weight:900;
+letter-spacing:1px;padding:3px 6px;border-radius:999px;
+background:rgba(34,197,94,.14);border:1px solid rgba(34,197,94,.35);color:#22c55e;opacity:.75;
+}
+.stock.buyGlow{box-shadow:0 0 26px rgba(34,197,94,.13),0 18px 38px rgba(0,0,0,.34)}
+.stock.watchGlow{box-shadow:0 0 24px rgba(250,204,21,.10),0 18px 38px rgba(0,0,0,.34)}
+.stock.avoidGlow{box-shadow:0 0 24px rgba(239,68,68,.10),0 18px 38px rgba(0,0,0,.34)}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:8px;padding-right:44px}
+.name{font-size:28px;font-weight:1000;letter-spacing:1px;line-height:.95}
+.price{font-size:26px;font-weight:1000;line-height:1}
+.small{font-size:11px;color:var(--muted)}
+.green{color:var(--green);font-weight:1000}.red{color:var(--red);font-weight:1000}
+.yellow{color:var(--yellow);font-weight:1000}.orange{color:var(--orange);font-weight:1000}
+.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px}
+.metric{
+background:linear-gradient(180deg,rgba(17,24,39,.95),rgba(8,13,24,.95));
+border-radius:12px;padding:8px;text-align:center;border:1px solid rgba(255,255,255,.04);
+}
+.metricValue{font-size:17px;font-weight:1000;margin-top:4px}
+.signal{font-size:31px;font-weight:1000;margin-top:7px;text-shadow:0 0 12px rgba(255,255,255,.16);padding:6px 0}
+.tradeBtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+.expandZone{margin-top:8px;padding:9px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid rgba(56,189,248,.08);display:none}
+.expandZone.open{display:block}
+.radar{
+position:relative;height:66px;border-radius:13px;margin:8px 0;overflow:hidden;
+background:radial-gradient(circle at center,rgba(56,189,248,.10),transparent 70%),linear-gradient(180deg,rgba(5,10,20,.95),rgba(2,6,14,.98));
+border:1px solid rgba(56,189,248,.22);box-shadow:inset 0 0 30px rgba(56,189,248,.08),0 0 22px rgba(56,189,248,.10);
+}
+.radar::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent 0px,transparent 17px,rgba(56,189,248,.05) 18px),repeating-linear-gradient(90deg,transparent 0px,transparent 17px,rgba(56,189,248,.05) 18px)}
+.radar::after{content:'';position:absolute;top:50%;left:-30%;width:40%;height:2px;background:linear-gradient(90deg,transparent,#22c55e,#38bdf8,transparent);box-shadow:0 0 16px rgba(56,189,248,.8);animation:radarSweep 2.8s linear infinite}
+.dot{position:absolute;width:7px;height:7px;border-radius:50%;background:#22c55e;box-shadow:0 0 12px rgba(34,197,94,.9),0 0 25px rgba(34,197,94,.4);animation:blip 1.6s infinite}
+.d1{top:25%;left:68%}.d2{top:60%;left:38%}.d3{top:45%;left:80%}
+@keyframes radarSweep{0%{left:-30%;transform:rotate(-8deg)}100%{left:120%;transform:rotate(8deg)}}
+@keyframes blip{0%{transform:scale(1);opacity:1}50%{transform:scale(1.35);opacity:.7}100%{transform:scale(1);opacity:1}}
+.compactMain{display:grid;grid-template-columns:82px 1fr;gap:10px;align-items:center;margin:8px 0 7px}
+.scoreTile{background:rgba(15,23,42,.82);border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:8px;text-align:center}
+.scoreTile span{display:block;font-size:9px;letter-spacing:1.2px;color:#94a3b8;font-weight:900}
+.scoreTile b{display:block;font-size:28px;line-height:1;margin-top:2px}
+.signalCompact{font-size:29px;font-weight:1000;text-align:right;letter-spacing:.6px;text-shadow:0 0 12px rgba(255,255,255,.10)}
+.momentumLine{height:9px;background:#020617;border-radius:999px;overflow:hidden;border:1px solid rgba(255,255,255,.04);margin:6px 0 9px}
+.momentumLine div{height:100%;background:linear-gradient(90deg,#ef4444,#facc15,#22c55e);box-shadow:0 0 18px rgba(34,197,94,.32)}
+.heatGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 9px}
+.heatCell{background:rgba(15,23,42,.78);border:1px solid rgba(255,255,255,.05);border-radius:11px;padding:7px 5px;text-align:center}
+.heatCell span{display:block;font-size:8px;letter-spacing:.8px;color:#94a3b8;font-weight:900}
+.heatCell b{display:block;font-size:11px;margin-top:3px}
+.metaLine{font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.35}
+.openTrade{
+background:rgba(255,255,255,.03);
+border:1px solid rgba(56,189,248,.08);
+border-radius:14px;
+padding:10px;
+margin-bottom:7px;
+}
+.openTradeTicker{font-size:19px;font-weight:1000;color:#38bdf8}
+.openTradePL{font-size:19px;font-weight:1000;margin-top:4px}
+.closedTrade{
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+border-radius:14px;
+padding:9px;
+margin-bottom:7px;
+}
+@media(max-width:600px){
+.panel{padding:12px}.hero{font-size:32px}.name{font-size:27px}.price{font-size:25px}
+.signalCompact{font-size:28px}.compactMain{grid-template-columns:80px 1fr}.scoreTile b{font-size:27px}
+}
+</style>
+</head>
+<body>
+
+<div class="panel">
+<div class="hero">OMEGA PREDATOR //</div>
+<div class="kicker">MOBILE STABLE V8 // TRADING TOP 10</div>
+<div class="sub">Terminal táctica de trading. Solo muestra el Top 10. Guarda trades, P/L vivo, historial y control anti-FOMO.</div>
+<input id="apiInput" type="password" placeholder="API KEY FinancialModelingPrep">
+<div class="modeGrid">
+<select id="universo"><option value="gainers">Top gainers</option><option value="watchlist">Watchlist IA/Semis</option></select>
+<select id="modo"><option value="normal">Modo normal</option><option value="agresivo">Modo agresivo</option><option value="defensivo">Modo defensivo</option></select>
+</div>
+<button class="btn" onclick="guardarApi()">GUARDAR API</button>
+<button class="btn" onclick="analizar()">ANALIZAR</button>
+</div>
+
+<div class="panel hunt"><div class="sectionTitle">📡 Señales Predator</div>🟢 <b>COMPRAR</b> → Momentum fuerte<br>🟡 <b>VIGILAR</b> → Setup interesante<br>🔴 <b>EVITAR</b> → Riesgo alto o debilidad<br>❄ <b>VENDER</b> → Deterioro táctico</div>
+
+<div class="statusGrid">
+<div class="statusBox"><div class="statusTitle">Estado</div><div id="estado" class="statusValue green">ESPERA</div></div>
+<div class="statusBox"><div class="statusTitle">Modo</div><div id="modoEstado" class="statusValue">⏳</div></div>
+<div class="statusBox"><div class="statusTitle">Cazar</div><div id="cazarCount" class="statusValue">0</div></div>
+<div class="statusBox"><div class="statusTitle">Trades</div><div id="posCount" class="statusValue">0</div></div>
+</div>
+
+<div class="panel"><div class="sectionTitle">⏱ Timing táctico</div><div id="timingBox" class="alert watch">Esperando análisis...</div></div>
+<div class="panel"><div class="sectionTitle">⚡ Sectores vivos</div><div id="sectorBox" class="alert hunt">Esperando lectura sectorial...</div></div>
+<div class="panel"><div class="sectionTitle">🌍 Clima de mercado</div><div id="marketBox" class="alert watch">Esperando análisis de contexto...</div></div>
+<div class="panel"><div class="sectionTitle">🎯 Presas calientes</div><div id="presasBox" class="alert hunt">Esperando escaneo táctico...</div></div>
+
+<div class="panel">
+<div class="sectionTitle">📂 Trades abiertos</div>
+<div id="openTradesList" class="alert watch">Sin trades abiertos</div>
+</div>
+
+<div class="panel">
+<div class="sectionTitle">📜 Historial Predator</div>
+<div id="historyStats" class="alert watch">Sin operaciones cerradas.</div>
+<div id="historyList"></div>
+</div>
+
+<div class="panel"><div class="sectionTitle">Radar Predator · Top 10</div><div id="cards"></div></div>
+<div class="panel"><div class="sectionTitle">🧠 Motor Predator</div><div id="motor" class="alert hunt">Predator en espera. Pulsa ANALIZAR para escanear momentum.</div></div>
+<div class="panel"><div class="sectionTitle">❄ Reglas frías</div><div class="alert">Predator no se casa con empresas. Entra por momentum y sale por deterioro. Solo Top 10. El resto es ruido.</div></div>
+
+<script>
+const STORAGE_KEY="omega_predator_v7_api_key";
+const CACHE_KEY="omega_predator_v7_cache";
+const POS_KEY="omega_predator_v7_positions";
+const HIST_KEY="omega_predator_v7_hist";
+const CLOSED_KEY="omega_predator_v7_closed_trades";
+
+let ultimaEjecucion=0, MARKET_STATE="NEUTRAL", NASDAQ_CHANGE=0, TIMING_MODE="NEUTRAL", SECTOR_LIDER="IA";
+let HISTORICO=JSON.parse(localStorage.getItem(HIST_KEY)||"{}");
+let posiciones=JSON.parse(localStorage.getItem(POS_KEY)||"[]");
+let historial=JSON.parse(localStorage.getItem(CLOSED_KEY)||"[]");
+let lastPrices={};
+
+const WATCHLIST=["NVDA","AVGO","AMD","MU","MRVL","ARM","PLTR","SMCI","TSM","ASML","INOD","SOUN","AI","IONQ","RGTI","GEV","LLY"];
+
+const DEMO=[
+{ticker:"INOD",nombre:"Innodata",precio:48.72,cambio:8.45,volumen:3800000,source:"DEMO"},
+{ticker:"SOUN",nombre:"SoundHound AI",precio:13.84,cambio:6.21,volumen:18900000,source:"DEMO"},
+{ticker:"PLTR",nombre:"Palantir",precio:128.66,cambio:3.42,volumen:42000000,source:"DEMO"},
+{ticker:"NVDA",nombre:"NVIDIA",precio:142.31,cambio:2.18,volumen:31500000,source:"DEMO"},
+{ticker:"AMD",nombre:"AMD",precio:164.22,cambio:1.72,volumen:22600000,source:"DEMO"},
+{ticker:"IONQ",nombre:"IonQ",precio:39.85,cambio:9.65,volumen:7200000,source:"DEMO"},
+{ticker:"RGTI",nombre:"Rigetti",precio:11.35,cambio:13.20,volumen:26500000,source:"DEMO"}
+];
+
+const input=document.getElementById("apiInput");
+input.value=localStorage.getItem(STORAGE_KEY)||"";
+
+function guardarApi(){
+ const k=input.value.trim();
+ if(!k){alert("Pega la API KEY primero.");return;}
+ localStorage.setItem(STORAGE_KEY,k);
+ alert("API guardada.");
+}
+
+function save(n,d){try{localStorage.setItem(n,JSON.stringify(d));}catch(e){}}
+function load(n,d){try{return JSON.parse(localStorage.getItem(n)||JSON.stringify(d));}catch(e){return d}}
+
+function posicion(t){return posiciones.find(p=>p.ticker===t)}
+function guardarPosiciones(){
+ localStorage.setItem(POS_KEY,JSON.stringify(posiciones));
+ document.getElementById("posCount").textContent=posiciones.length;
+}
+
+function renderOpenTradesLive(datos){
+ const box=document.getElementById("openTradesList");
+
+ if(!posiciones.length){
+  box.className="alert watch";
+  box.innerHTML="Sin trades abiertos";
+  return;
+ }
+
+ box.className="alert watch";
+ box.innerHTML=posiciones.map(p=>{
+  const live=(datos||[]).find(x=>x.ticker===p.ticker);
+  const actual=live?live.precio:(lastPrices[p.ticker]||p.precio);
+  const pl=((actual-p.precio)/p.precio)*100;
+  const money=(actual-p.precio);
+  const stop=trailingStop(p,actual);
+  const estado=pl<-8?"PELIGRO":pl>8?"PROTEGER":pl>3?"BIEN":"NORMAL";
+
+  return `
+  <div class="openTrade">
+   <div class="openTradeTicker">${p.ticker}</div>
+   <div class="small">Entrada: $${Number(p.precio).toFixed(2)} · Actual: $${Number(actual).toFixed(2)}</div>
+   <div class="${pl>=0?'green':'red'} openTradePL">${pl>=0?'+':''}${pl.toFixed(2)}%</div>
+   <div class="${money>=0?'green':'red'} small">${money>=0?'+':''}$${money.toFixed(2)} por acción</div>
+   <div class="small">Score entrada: ${p.score} · Estado: ${estado}</div>
+   <div class="small">Trailing stop táctico: $${stop.toFixed(2)}</div>
+  </div>`;
+ }).join("");
+}
+
+function renderHistory(){
+ const stats=document.getElementById("historyStats");
+ const list=document.getElementById("historyList");
+
+ if(!historial.length){
+  stats.className="alert watch";
+  stats.innerHTML="Sin operaciones cerradas.";
+  list.innerHTML="";
+  return;
+ }
+
+ const wins=historial.filter(x=>Number(x.plPct)>=0).length;
+ const losses=historial.length-wins;
+ const winRate=(wins/historial.length)*100;
+ const best=historial.slice().sort((a,b)=>b.plPct-a.plPct)[0];
+ const worst=historial.slice().sort((a,b)=>a.plPct-b.plPct)[0];
+
+ stats.className="alert hunt";
+ stats.innerHTML=`Win rate: <b>${winRate.toFixed(1)}%</b><br>Ganadoras: ${wins} · Perdedoras: ${losses}<br>Mejor: ${best.ticker} ${best.plPct.toFixed(2)}% · Peor: ${worst.ticker} ${worst.plPct.toFixed(2)}%`;
+
+ list.innerHTML=historial.slice().reverse().slice(0,8).map(h=>`
+  <div class="closedTrade">
+   <b>${h.ticker}</b> <span class="${h.plPct>=0?'green':'red'}">${h.plPct>=0?'+':''}${h.plPct.toFixed(2)}%</span><br>
+   <span class="small">Entrada: $${Number(h.entrada).toFixed(2)} · Salida: $${Number(h.salida).toFixed(2)}</span><br>
+   <span class="small">Score entrada: ${h.score} · ${h.fechaSalida}</span>
+  </div>
+ `).join("");
+}
+
+function comprar(ticker,precio,score){
+ if(!precio || precio<=0){alert("No guardo compra sin precio.");return;}
+ if(posicion(ticker)){alert(ticker+" ya está guardada.");return;}
+ posiciones.push({ticker,precio,score,fecha:new Date().toLocaleString("es-ES")});
+ guardarPosiciones();
+ render(load(CACHE_KEY,DEMO));
+}
+
+function vender(ticker){
+ const pos=posicion(ticker);
+ if(pos){
+  const salida=lastPrices[ticker]||pos.precio;
+  const plPct=((salida-pos.precio)/pos.precio)*100;
+  historial.push({
+   ticker:pos.ticker,
+   entrada:pos.precio,
+   salida,
+   score:pos.score,
+   fechaEntrada:pos.fecha,
+   fechaSalida:new Date().toLocaleString("es-ES"),
+   plPct
+  });
+  save(CLOSED_KEY,historial);
+ }
+ posiciones=posiciones.filter(p=>p.ticker!==ticker);
+ guardarPosiciones();
+ render(load(CACHE_KEY,DEMO));
+}
+
+function trailingStop(pos,actual){
+ const gain=((actual-pos.precio)/pos.precio)*100;
+ if(gain>15)return actual*0.93;
+ if(gain>10)return actual*0.91;
+ if(gain>6)return actual*0.89;
+ return pos.precio*0.92;
+}
+
+function num(v){return Number(String(v??0).replace("%","").replace("+",""))||0}
+
+async function fetchJSON(url){
+ try{
+  const r=await fetch(url,{cache:"no-store"});
+  if(!r.ok)return null;
+  return await r.json();
+ }catch(e){return null}
+}
+
+async function fetchQuote(ticker,key){
+ if(!key)return null;
+
+ let raw=await fetchJSON(`https://financialmodelingprep.com/stable/quote?symbol=${encodeURIComponent(ticker)}&apikey=${encodeURIComponent(key)}&t=${Date.now()}`);
+ let x=Array.isArray(raw)?raw[0]:raw;
+
+ if(x && Number(x.price||0)>0){
+  return {ticker,nombre:x.name||x.companyName||ticker,precio:Number(x.price||0),cambio:num(x.changesPercentage??x.changePercentage??x.change??0),volumen:Number(x.volume||0),source:"FMP"};
+ }
+
+ raw=await fetchJSON(`https://financialmodelingprep.com/api/v3/quote/${encodeURIComponent(ticker)}?apikey=${encodeURIComponent(key)}&t=${Date.now()}`);
+ x=Array.isArray(raw)?raw[0]:raw;
+
+ if(x && Number(x.price||0)>0){
+  return {ticker,nombre:x.name||ticker,precio:Number(x.price||0),cambio:num(x.changesPercentage??x.change??0),volumen:Number(x.volume||0),source:"FMP"};
+ }
+
+ return null;
+}
+
+async function fetchGainers(key){
+ if(!key)return [];
+ const endpoints=[
+  `https://financialmodelingprep.com/stable/biggest-gainers?apikey=${encodeURIComponent(key)}&t=${Date.now()}`,
+  `https://financialmodelingprep.com/api/v3/stock_market/gainers?apikey=${encodeURIComponent(key)}&t=${Date.now()}`
+ ];
+
+ for(const url of endpoints){
+  const raw=await fetchJSON(url);
+  const arr=Array.isArray(raw)?raw:(raw?.data||raw?.gainers||[]);
+  const parsed=(arr||[]).map(x=>({
+   ticker:x.symbol||x.ticker,
+   nombre:x.name||x.companyName||x.symbol||x.ticker,
+   precio:Number(x.price||0),
+   cambio:num(x.changesPercentage??x.changePercentage??x.change??0),
+   volumen:Number(x.volume||0),
+   source:"FMP"
+  })).filter(x=>x.ticker&&x.precio>0).slice(0,20);
+  if(parsed.length)return parsed;
+ }
+ return [];
+}
+
+function persistencia(ticker,cambio){
+ if(!HISTORICO[ticker])HISTORICO[ticker]=[];
+ HISTORICO[ticker].push(cambio);
+ if(HISTORICO[ticker].length>5)HISTORICO[ticker].shift();
+ save(HIST_KEY,HISTORICO);
+ let p=0;
+ HISTORICO[ticker].forEach(v=>{if(v>0)p+=1;if(v>3)p+=1});
+ return p;
+}
+
+function despertarTemprano(a){
+ const c=a.cambio||0,v=a.volumen||0,p=a.precio||0;
+ let d=0;
+ if(c>1.5&&c<8)d+=6;
+ if(v>800000)d+=4;
+ if(v>3000000)d+=4;
+ if(c>12)d-=8;
+ if(p>5&&p<200)d+=3;
+ return d;
+}
+
+function persecucionTardia(a){
+ const c=a.cambio||0,v=a.volumen||0;
+ let p=0;
+ if(c>14)p+=8;
+ if(c>20)p+=12;
+ if(c>30)p+=18;
+ if(v>10000000&&c>18)p+=6;
+ return p;
+}
+
+function scorePredator(a){
+ const c=a.cambio||0,v=a.volumen||0,p=a.precio||0;
+ let s=50;
+
+ if(c>2)s+=10;
+ if(c>5)s+=14;
+ if(c>10)s+=10;
+ if(c<0)s-=10;
+ if(c<-4)s-=18;
+
+ if(v>500000)s+=6;
+ if(v>2000000)s+=8;
+ if(v>10000000)s+=6;
+
+ if(p<3)s-=20;
+ if(p>5&&p<300)s+=4;
+
+ const rs=c-NASDAQ_CHANGE;
+ if(rs>1.5)s+=6;
+ if(rs>4)s+=8;
+ if(rs<-2)s-=8;
+
+ const pers=persistencia(a.ticker,c);
+ if(pers>=4)s+=8;
+ if(pers>=7)s+=12;
+
+ s+=despertarTemprano(a);
+
+ if(c>18)s-=6;
+ if(c>25)s-=12;
+ if(c>35)s-=18;
+
+ s-=persecucionTardia(a);
+
+ if(SECTOR_LIDER==="IA"&&["NVDA","PLTR","AI","SOUN","INOD","SMCI"].includes(a.ticker))s+=5;
+ if(SECTOR_LIDER==="Semiconductores"&&["NVDA","AVGO","AMD","MU","TSM","ASML","ARM"].includes(a.ticker))s+=5;
+
+ if(TIMING_MODE==="HOT")s+=4;
+ if(TIMING_MODE==="POWER")s+=3;
+ if(TIMING_MODE==="SLOW")s-=5;
+
+ if(MARKET_STATE==="RISK_ON")s+=5;
+ if(MARKET_STATE==="RISK_OFF"){s-=12;if(p<10)s-=6}
+
+ const modo=document.getElementById("modo").value;
+ if(modo==="agresivo"&&c>6)s+=8;
+ if(modo==="defensivo"){if(c>18)s-=10;if(p<8)s-=8}
+
+ return Math.max(0,Math.min(100,Math.round(s)));
+}
+
+function senal(a){
+ const s=scorePredator(a);
+ const pos=posicion(a.ticker);
+
+ if(pos){
+  const pl=a.precio>0&&pos.precio>0?((a.precio-pos.precio)/pos.precio)*100:0;
+  if(pl<-8)return["VENDER","red"];
+  if(s<58)return["VENDER","red"];
+  if(s>=70)return["MANTENER","green"];
+  return["VIGILAR","yellow"];
+ }
+
+ if(s>=78)return["COMPRAR","green"];
+ if(s>=66)return["VIGILAR","yellow"];
+ return["EVITAR","red"];
+}
+
+function niveles(a){
+ const p=a.precio||0,c=Math.abs(a.cambio||0);
+ let stopPct=.92;
+ if(c>10)stopPct=.86;
+ else if(c>6)stopPct=.89;
+ else if(c<3)stopPct=.94;
+ return{entrada:p,stop:p*stopPct,objetivo:p*(1+(1-stopPct)*1.8)};
+}
+
+function detectarTimingMercado(){
+ const total=new Date().getHours()*60+new Date().getMinutes();
+ const box=document.getElementById("timingBox");
+
+ if(total>=930&&total<=1080){
+  TIMING_MODE="HOT";box.className="alert hunt";box.innerHTML="🔥 APERTURA USA<br>Momentum vivo. Predator se vuelve más agresivo tácticamente.";
+ }else if(total>=1260&&total<=1325){
+  TIMING_MODE="POWER";box.className="alert hunt";box.innerHTML="⚡ CIERRE POTENTE<br>Momento importante para continuación o distribución.";
+ }else if(total>=1080&&total<=1200){
+  TIMING_MODE="SLOW";box.className="alert watch";box.innerHTML="❄ MEDIA SESIÓN<br>Muchos movimientos falsos. Predator endurece ligeramente señales.";
+ }else{
+  TIMING_MODE="NEUTRAL";box.className="alert watch";box.innerHTML="🟡 FUERA DE HORAS CLAVE<br>Mercado menos explosivo. Señales menos fiables.";
+ }
+}
+
+
+async function stableWait(ms){return new Promise(r=>setTimeout(r,ms));}
+
+async function stableFetchQuoteList(tickers,key,delay=180){
+ const out=[];
+ for(const t of tickers){
+  const q=await fetchQuote(t,key);
+  if(q)out.push(q);
+  await stableWait(delay);
+ }
+ return out;
+}
+
+async function stableTaskList(tasks,delay=220){
+ const out=[];
+ for(const task of tasks){
+  try{
+   const r=await task();
+   out.push(r);
+  }catch(e){
+   out.push(null);
+  }
+  await stableWait(delay);
+ }
+ return out;
+}
+
+async function fetchMarketContext(key){
+ const data=await stableFetchQuoteList(["QQQ","SPY","SMH"],key,160);
+
+ if(!data.length){
+  MARKET_STATE="NEUTRAL";
+  NASDAQ_CHANGE=0;
+  document.getElementById("marketBox").className="alert watch";
+  document.getElementById("marketBox").innerHTML="🟡 NEUTRAL<br>Sin datos reales de contexto. Predator usa modo local funcional.";
+  return;
+ }
+
+ const qqq=data.find(x=>x.ticker==="QQQ"),spy=data.find(x=>x.ticker==="SPY"),smh=data.find(x=>x.ticker==="SMH");
+ NASDAQ_CHANGE=qqq?qqq.cambio:0;
+ let score=0;
+ if(qqq&&qqq.cambio>0)score++;
+ if(spy&&spy.cambio>0)score++;
+ if(smh&&smh.cambio>0)score++;
+ if(qqq&&qqq.cambio<-1)score--;
+ if(spy&&spy.cambio<-1)score--;
+ if(smh&&smh.cambio<-1)score--;
+
+ MARKET_STATE=score>=2?"RISK_ON":score<=-1?"RISK_OFF":"NEUTRAL";
+ const box=document.getElementById("marketBox");
+
+ if(MARKET_STATE==="RISK_ON"){box.className="alert hunt";box.innerHTML="🟢 RISK ON<br>Nasdaq/mercado acompañan."}
+ else if(MARKET_STATE==="RISK_OFF"){box.className="alert danger";box.innerHTML="🔴 RISK OFF<br>Mercado peligroso."}
+ else{box.className="alert watch";box.innerHTML="🟡 NEUTRAL<br>Mercado mixto."}
+}
+
+async function detectarSectores(key){
+ const sectores=[{nombre:"IA",ticker:"QQQ"},{nombre:"Semiconductores",ticker:"SMH"},{nombre:"Biotech",ticker:"XBI"},{nombre:"Energía",ticker:"XLE"},{nombre:"Defensa",ticker:"ITA"},{nombre:"Robótica",ticker:"BOTZ"}];
+
+ const data=[];
+ for(const s of sectores){
+  const q=await fetchQuote(s.ticker,key);
+  if(q)data.push({nombre:s.nombre,cambio:q.cambio});
+  await stableWait(160);
+ }
+ data.sort((a,b)=>b.cambio-a.cambio);
+
+ const box=document.getElementById("sectorBox");
+
+ if(!data.length){
+  SECTOR_LIDER="IA";
+  box.className="alert hunt";
+  box.innerHTML="🔥 Sectores con más fuerza táctica:<br><br>🥇 IA · modo local<br>🥈 Semiconductores · modo local<br>🥉 Robótica · modo local";
+  return;
+ }
+
+ SECTOR_LIDER=data[0].nombre;
+ box.className="alert hunt";
+ box.innerHTML="🔥 Sectores con más fuerza táctica:<br><br>"+data.slice(0,3).map((x,i)=>(i===0?"🥇":i===1?"🥈":"🥉")+" "+x.nombre+" · "+x.cambio.toFixed(2)+"%").join("<br>");
+}
+
+function actualizarPresas(datos){
+ const top=datos.slice().sort((a,b)=>scorePredator(b)-scorePredator(a)).slice(0,3);
+ const box=document.getElementById("presasBox");
+
+ if(!top.length){box.className="alert danger";box.innerHTML="Sin presas activas.";return}
+
+ box.className="alert hunt";
+ box.innerHTML="🔥 Momentum dominante ahora mismo:<br><br>"+top.map((x,i)=>(i===0?"🎯":i===1?"⚡":"👁")+" "+x.ticker+" · Score "+scorePredator(x)+" · "+Number(x.cambio||0).toFixed(2)+"%").join("<br>");
+}
+
+function toggleCard(id){const el=document.getElementById(id);if(el)el.classList.toggle("open")}
+
+function renderPlaceholder(){
+ document.getElementById("cards").innerHTML='<div class="alert watch">Predator está en espera. Pulsa ANALIZAR para cargar el radar.</div>';
+}
+
+function render(datos){
+ datos=Array.isArray(datos)?datos.filter(x=>x&&x.precio>0):[];
+
+ lastPrices={};
+ datos.forEach(x=>{lastPrices[x.ticker]=x.precio;});
+
+ actualizarPresas(datos);
+
+ if(!datos.length){
+  document.getElementById("cards").innerHTML='<div class="alert danger">⚠ No hay datos. Pulsa ANALIZAR otra vez o usa modo watchlist.</div>';
+  renderOpenTradesLive(datos);
+  renderHistory();
+  return;
+ }
+
+ let html="",cazar=0;
+
+ datos.slice().sort((a,b)=>scorePredator(b)-scorePredator(a)).slice(0,10).forEach(a=>{
+  const score=scorePredator(a),[sig,color]=senal(a),n=niveles(a),pos=posicion(a.ticker);
+  const pl=pos&&a.precio>0&&pos.precio>0?((a.precio-pos.precio)/pos.precio)*100:null;
+  const rs=(a.cambio||0)-NASDAQ_CHANGE;
+  const chase=persecucionTardia(a);
+  const wake=despertarTemprano(a);
+  const momLabel=(a.cambio||0)>=8?'ALTO':(a.cambio||0)>=3?'MEDIO':(a.cambio||0)>0?'BAJO':'ROJO';
+  const rsLabel=rs>=4?'FUERTE':rs>=1.5?'OK':rs>=-2?'NEUTRO':'DÉBIL';
+  const volLabel=(a.volumen||0)>10000000?'ALTO':(a.volumen||0)>2000000?'OK':(a.volumen||0)>0?'BAJO':'N/D';
+  const fomoLabel=chase>10?'TARDE':chase>0?'OJO':'OK';
+  const glow=sig==='COMPRAR'?'buyGlow':sig==='VIGILAR'||sig==='MANTENER'?'watchGlow':'avoidGlow';
+
+  if(sig==="COMPRAR")cazar++;
+
+  html+=`
+  <div class="stock ${glow}">
+   <div class="top">
+    <div>
+     <div class="name">${a.ticker}</div>
+     <div class="small">${a.nombre||"Momentum táctico"} · ${a.source||"LOCAL"}</div>
+     ${pos?`<div class="green small" style="margin-top:5px">EN TRADE · $${Number(pos.precio||0).toFixed(2)}${pl!==null?" · "+pl.toFixed(2)+"%":""}</div>`:""}
+    </div>
+
+    <div style="text-align:right">
+     <div class="price">$${Number(a.precio).toFixed(2)}</div>
+     <div class="${(a.cambio||0)>=0?'green':'red'}" style="font-size:15px">${Number(a.cambio||0).toFixed(2)}%</div>
+    </div>
+   </div>
+
+   <div class="compactMain">
+    <div class="scoreTile"><span>SCORE</span><b>${score}</b></div>
+    <div class="${color} signalCompact">${sig}</div>
+   </div>
+
+   <div class="momentumLine"><div style="width:${score}%"></div></div>
+
+   <div class="heatGrid">
+    <div class="heatCell"><span>MOM</span><b class="${momLabel==='ALTO'?'green':momLabel==='MEDIO'?'yellow':momLabel==='ROJO'?'red':''}">${momLabel}</b></div>
+    <div class="heatCell"><span>RS</span><b class="${rsLabel==='FUERTE'?'green':rsLabel==='DÉBIL'?'red':''}">${rsLabel}</b></div>
+    <div class="heatCell"><span>VOL</span><b>${volLabel}</b></div>
+    <div class="heatCell"><span>FOMO</span><b class="${fomoLabel==='TARDE'?'orange':fomoLabel==='OK'?'green':'yellow'}">${fomoLabel}</b></div>
+   </div>
+
+   ${chase>10?'<div class="orange small" style="margin-top:4px">⚠ POSIBLE ENTRADA TARDÍA / FOMO</div>':""}
+
+   <div class="tradeBtns">
+    ${pos?`<button class="btn btnSell" onclick="vender('${a.ticker}')">CERRAR</button>`:`<button class="btn" onclick="comprar('${a.ticker}',${a.precio||0},${score})">GUARDAR</button>`}
+    <button class="btn btnDark" onclick="toggleCard('x_${a.ticker}')">ANÁLISIS</button>
+   </div>
+
+   <div class="metaLine">
+    Obj: $${n.objetivo.toFixed(2)} · Stop: $${n.stop.toFixed(2)} · Vol: ${Number(a.volumen||0).toLocaleString("es-ES")}
+   </div>
+
+   <div class="expandZone" id="x_${a.ticker}">
+    <div class="metrics">
+     <div class="metric"><div class="small">Entrada</div><div class="metricValue">$${n.entrada.toFixed(2)}</div></div>
+     <div class="metric"><div class="small">Wake</div><div class="metricValue">${wake>8?"⚡":wake>4?"👁":"-"}</div></div>
+     <div class="metric"><div class="small">Convicción</div><div class="metricValue">${score>85?"ALTA":score>70?"MEDIA":"BAJA"}</div></div>
+    </div>
+    <div class="metrics">
+     <div class="metric"><div class="small">Sector</div><div class="metricValue">${SECTOR_LIDER}</div></div>
+     <div class="metric"><div class="small">Timing</div><div class="metricValue">${TIMING_MODE}</div></div>
+     <div class="metric"><div class="small">RS</div><div class="metricValue">${rs.toFixed(1)}%</div></div>
+    </div>
+    <div class="radar"><div class="dot d1"></div><div class="dot d2"></div><div class="dot d3"></div></div>
+   </div>
+  </div>`;
+ });
+
+ document.getElementById("cards").innerHTML=html;
+ document.getElementById("cazarCount").textContent=cazar;
+ document.getElementById("posCount").textContent=posiciones.length;
+
+ renderOpenTradesLive(datos);
+ renderHistory();
+
+ if(cazar>0){
+  document.getElementById("estado").textContent="CAZA";
+  document.getElementById("estado").className="statusValue green";
+  document.getElementById("modoEstado").textContent="😈";
+  document.getElementById("motor").className="alert hunt";
+  document.getElementById("motor").innerHTML="Predator detecta momentum explotable. Entrar solo con plan de salida.";
+ }else{
+  document.getElementById("estado").textContent="FRÍO";
+  document.getElementById("estado").className="statusValue yellow";
+  document.getElementById("modoEstado").textContent="❄";
+  document.getElementById("motor").className="alert watch";
+  document.getElementById("motor").innerHTML="Predator no ve entradas claras. Esperar también es operar.";
+ }
+}
+
+async function analizar(){
+ const key=(localStorage.getItem(STORAGE_KEY)||input.value||"").trim();
+
+ const ahora=Date.now();
+ if(ahora-ultimaEjecucion<8000){alert("Espera unos segundos antes de volver a analizar.");return}
+ ultimaEjecucion=ahora;
+
+ document.getElementById("estado").textContent="SCAN";
+ document.getElementById("modoEstado").textContent="⚡";
+ document.getElementById("motor").className="alert hunt";
+ document.getElementById("motor").innerHTML="📡 Escaneando en paralelo. Si la API falla, Predator usa modo local funcional.";
+
+ detectarTimingMercado();
+
+ if(key){
+  await fetchMarketContext(key);
+  await stableWait(220);
+  await detectarSectores(key);
+ }else{
+  MARKET_STATE="NEUTRAL";
+  SECTOR_LIDER="IA";
+  document.getElementById("marketBox").className="alert watch";
+  document.getElementById("marketBox").innerHTML="🟡 NEUTRAL<br>Sin API guardada. Predator usa modo local funcional.";
+  document.getElementById("sectorBox").className="alert hunt";
+  document.getElementById("sectorBox").innerHTML="🔥 Sectores con más fuerza táctica:<br><br>🥇 IA · modo local<br>🥈 Semiconductores · modo local<br>🥉 Robótica · modo local";
+ }
+
+ let datos=[];
+
+ if(key && document.getElementById("universo").value==="gainers"){
+  datos=await fetchGainers(key);
+ }
+
+ if(key && !datos.length){
+  datos=await stableFetchQuoteList(WATCHLIST,key,150);
+ }
+
+ const cache=load(CACHE_KEY,[]).filter(x=>x&&x.precio>0);
+
+ if(datos.length){
+  save(CACHE_KEY,datos);
+ }else if(cache.length){
+  datos=cache.map(x=>({...x,source:"CACHE"}));
+ }else{
+  datos=DEMO;
+ }
+
+ render(datos);
+}
+
+renderPlaceholder();
+guardarPosiciones();
+renderOpenTradesLive(load(CACHE_KEY,DEMO));
+renderHistory();
+</script>
+</body>
+</html>
